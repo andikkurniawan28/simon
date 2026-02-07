@@ -93,11 +93,15 @@ if ($now < $todaySixAM) {
     $factoryDate = (new DateTime('yesterday'))->format('Y-m-d');
     $factoryStart = (new DateTime('yesterday'))->setTime(6, 0, 0);
     $factoryEnd   = (new DateTime())->setTime(5, 59, 59);
+    $factoryStartRetail = (new DateTime('yesterday'))->setTime(7, 0, 0);
+    $factoryEndRetail   = (new DateTime())->setTime(6, 59, 59);
 } else {
     // Hari kerja hari ini
     $factoryDate = (new DateTime())->format('Y-m-d');
     $factoryStart = (new DateTime())->setTime(6, 0, 0);
     $factoryEnd   = (new DateTime('tomorrow'))->setTime(5, 59, 59);
+    $factoryStartRetail = (new DateTime())->setTime(7, 0, 0);
+    $factoryEndRetail   = (new DateTime('tomorrow'))->setTime(6, 59, 59);
 }
 
 /**
@@ -108,6 +112,8 @@ if ($now < $todaySixAM) {
 $_SESSION['date']  = $factoryDate;
 $_SESSION['date_start'] = $factoryStart->format('Y-m-d H:i:s');
 $_SESSION['date_end']   = $factoryEnd->format('Y-m-d H:i:s');
+$_SESSION['date_start_retail']   = $factoryStartRetail->format('Y-m-d H:i:s');
+$_SESSION['date_end_retail']   = $factoryEndRetail->format('Y-m-d H:i:s');
 
 
 /**

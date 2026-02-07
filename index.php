@@ -76,6 +76,7 @@ include('header.php');
                 'timbangan_rs_out',
                 'timbangan_conveyor',
                 'produksi_50',
+                'produksi_retail',
             ];
         foreach($timbangan as $t): ?>
         <div class="col-md-3">

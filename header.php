@@ -183,6 +183,11 @@ if ($result) {
                                     Produksi 50Kg
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="produksi_retail.php">
+                                    Produksi Retail
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item">
