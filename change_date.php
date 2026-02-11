@@ -36,6 +36,8 @@ $baseDate = new DateTime($inputDate);
 
 $dateStart = (clone $baseDate)->setTime(6, 0, 0);
 $dateEnd   = (clone $baseDate)->modify('+1 day')->setTime(5, 59, 59);
+$dateStartRetail = (clone $baseDate)->setTime(7, 0, 0);
+$dateEndRetail = (clone $baseDate)->modify('+1 day')->setTime(6, 59, 59);
 
 /**
  * =========================
@@ -45,6 +47,8 @@ $dateEnd   = (clone $baseDate)->modify('+1 day')->setTime(5, 59, 59);
 $_SESSION['date']       = $baseDate->format('Y-m-d');
 $_SESSION['date_start'] = $dateStart->format('Y-m-d H:i:s');
 $_SESSION['date_end']   = $dateEnd->format('Y-m-d H:i:s');
+$_SESSION['date_start_retail']   = $dateStartRetail->format('Y-m-d H:i:s');
+$_SESSION['date_end_retail']   = $dateEndRetail->format('Y-m-d H:i:s');
 
 /**
  * =========================

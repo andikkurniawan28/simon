@@ -117,6 +117,9 @@ foreach ($malam_hours as $h) {
     $malam_total += $hours[$h];
 }
 
+echo $day_start;
+echo $day_end;
+
 ?>
 
 <div class="container content-container">
