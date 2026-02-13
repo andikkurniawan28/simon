@@ -1,7 +1,303 @@
 <?php
+$station_id = intval($_GET['id'] ?? 0);
+include('session_manager.php');
+
+// Definisikan allowed berdasarkan station_id
+$allowed = [];
+
+switch ($station_id) {
+    // Raw Sugar
+    case 1: 
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+    
+    // Gilingan
+    case 2:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+    
+    // Pemurnian
+    case 3:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+    
+    // Penguapan
+    case 4:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+        
+    // DRK
+    case 5:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+    
+    // Masakan
+    case 6:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+        
+    // Stroop
+    case 7:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+    
+    // Gula
+    case 8:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+      
+    // Tangki Tetes
+    case 9:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+        
+    // Ketel
+    case 10:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+    
+    // Packer
+    case 11:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+        
+    // Request
+    case 12:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            'Direksi',
+            'Tamu',
+        ];
+        break;
+       
+    // Sogokan
+    case 16:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            // 'Direksi',
+            // 'Tamu',
+        ];
+        break;
+}
+
+// Cek role access dengan allowed yang sudah di-switch
+checkRoleAccess($allowed);
+
 include('header.php');
 
-$station_id = intval($_GET['id'] ?? 0);
 if ($station_id <= 0) {
     die('Station tidak valid');
 }

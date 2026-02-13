@@ -1,5 +1,4 @@
 <?php 
-include('session_manager.php'); 
 include 'db.php';
 
 $stations = [];

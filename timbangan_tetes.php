@@ -1,11 +1,23 @@
 <?php
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-/**
- * =========================
- * AUTH & HEADER
- * =========================
- */
+include('session_manager.php');
+checkRoleAccess([
+    'Superadmin', 
+    'Kabag', 
+    'Kasie', 
+    'Kasubsie', 
+    'Admin QC', 
+    'Koordinator QC', 
+    'Mandor Off Farm', 
+    // 'Analis Off Farm', 
+    // 'Mandor On Farm', 
+    // 'Analis On Farm', 
+    // 'Operator Pabrikasi',
+    // 'Staff Teknik',
+    // 'Staff Tanaman',
+    // 'Staff TUK',
+    // 'Direksi',
+    // 'Tamu',
+    ]);
 include('header.php');
 
 /**
