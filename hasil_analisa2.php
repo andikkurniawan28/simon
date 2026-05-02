@@ -1,5 +1,6 @@
 <?php
 $station_id = intval($_GET['id'] ?? 0);
+$search = isset($_GET['search']) ? trim($_GET['search']) : ''; // Tambahkan parameter search
 include('session_manager.php');
 
 // Definisikan allowed berdasarkan station_id
@@ -328,19 +329,86 @@ $station = $conn->query("
 
 /**
  * =========================
- * MATERIALS
+ * MATERIALS dengan fitur pencarian
  * =========================
  */
-$materialsQ = $conn->query("
+$materialsQuery = "
     SELECT id, name
     FROM materials
     WHERE station_id = $station_id
-    ORDER BY id ASC
-");
+";
+
+if (!empty($search)) {
+    $searchEscaped = $conn->real_escape_string($search);
+    $materialsQuery .= " AND name LIKE '%$searchEscaped%'";
+}
+
+$materialsQuery .= " ORDER BY id ASC";
+
+$materialsQ = $conn->query($materialsQuery);
 ?>
 
 <div class="container content-container">
     <br><br>
+    
+    <!-- Header dengan judul station dan form pencarian -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h4>Data Analisa: <?= htmlspecialchars($station['name']) ?></h4>
+        </div>
+        <div class="col-md-6">
+            <form method="GET" action="" id="searchForm">
+                <input type="hidden" name="id" value="<?= $station_id ?>">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="form-control" 
+                        placeholder="Ketik untuk mencari material..." 
+                        value="<?= htmlspecialchars($search) ?>"
+                        autocomplete="off"
+                        id="searchInput"
+                    >
+                    <?php if (!empty($search)): ?>
+                        <a href="?id=<?= $station_id ?>" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Info hasil pencarian -->
+    <?php if (!empty($search)): ?>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="alert alert-info py-2">
+                    <i class="fas fa-info-circle"></i> 
+                    Menampilkan <strong><?= $materialsQ->num_rows ?></strong> material untuk pencarian "<strong><?= htmlspecialchars($search) ?></strong>"
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    
+    <!-- Pesan jika tidak ada material -->
+    <?php if ($materialsQ->num_rows == 0): ?>
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <?php if (!empty($search)): ?>
+                        Tidak ada material dengan nama "<strong><?= htmlspecialchars($search) ?></strong>" ditemukan.
+                    <?php else: ?>
+                        Tidak ada material untuk station ini.
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="row">
 
@@ -429,12 +497,15 @@ $materialsQ = $conn->query("
             $data->data_seek(0);
             ?>
 
-            <!-- <div class="col-md-4"> -->
             <div class="col-md-<?php if(count($methods) >= 8) echo "12"; else echo "6"; ?>">
                 <div class="card mb-4">
-
-                    <div class="card-header text-left">
+                    
+                    <!-- Highlight jika material sesuai pencarian -->
+                    <div class="card-header text-left <?= (!empty($search) && stripos($material['name'], $search) !== false) ? 'bg-warning' : '' ?>">
                         <strong><?= strtoupper($material['name']) ?></strong>
+                        <?php if (!empty($search) && stripos($material['name'], $search) !== false): ?>
+                            <span class="badge bg-dark ms-2">Hasil pencarian</span>
+                        <?php endif; ?>
                     </div>
 
                     <div class="card-body">
@@ -540,5 +611,77 @@ $materialsQ = $conn->query("
 
     </div>
 </div>
+
+<!-- JavaScript untuk pencarian langsung (live search) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+    const stationId = '<?= $station_id ?>';
+    
+    if (searchInput) {
+        // Variable untuk debounce
+        let timeout = null;
+        
+        // Fungsi untuk submit form
+        function submitSearch() {
+            searchForm.submit();
+        }
+        
+        // Event listener untuk setiap kali user mengetik
+        searchInput.addEventListener('input', function() {
+            // Clear timeout sebelumnya
+            clearTimeout(timeout);
+            
+            // Set timeout baru (300ms delay setelah berhenti mengetik)
+            timeout = setTimeout(submitSearch, 300);
+        });
+        
+        // Mencegah form submit normal ketika enter
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitSearch();
+        });
+        
+        // Hapus timeout jika input dikosongkan dengan cepat
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                timeout = setTimeout(submitSearch, 50);
+            }
+        });
+    }
+});
+</script>
+
+<!-- CSS tambahan untuk live search -->
+<style>
+/* Animasi loading untuk indikator pencarian */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.search-loading .input-group-text i {
+    animation: pulse 1s infinite;
+}
+
+/* Style untuk input pencarian */
+#searchInput {
+    border-left: none;
+    padding-left: 0;
+}
+
+.input-group-text {
+    border-right: none;
+    background-color: white;
+}
+
+/* Hover effect untuk tombol reset */
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+}
+</style>
 
 <?php include('footer.php'); ?>

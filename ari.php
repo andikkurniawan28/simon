@@ -17,6 +17,7 @@ checkRoleAccess([
     // 'Staff TUK',
     // 'Direksi',
     // 'Tamu',
+    'Pemimpin',
     ]);
 include('header.php');
 

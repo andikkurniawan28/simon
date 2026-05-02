@@ -1,4 +1,5 @@
 <?php 
+// session_start(); // Tambahkan session_start() di awal
 include 'db.php';
 
 $stations = [];
@@ -93,6 +94,43 @@ if ($result) {
             background-size: cover;
             background-attachment: fixed;
         }
+        
+        /* Style untuk user info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            color: black;
+            margin-right: 15px;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .user-role {
+            font-size: 11px;
+            opacity: 0.9;
+            line-height: 1.2;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -110,8 +148,7 @@ if ($result) {
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="dashboard.php">
                             Dashboard
@@ -191,29 +228,41 @@ if ($result) {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="keliling_proses.php">
-                            Keliling Proses
+                            Keliling
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="flow.php">
-                            Tebu Tergiling & Flow Dalam Proses
+                            Flow
                         </a>
                     </li>               
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="penggunaan_bpp.php">
-                            Bahan Pembantu Proses
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="logout.php">
-                            Logout
+                            BPP
                         </a>
                     </li>
                 </ul>
+                
+                <!-- Tampilkan informasi user di sebelah kanan navbar -->
+                <div class="d-flex align-items-center">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <?= strtoupper(substr($_SESSION['name'] ?? 'U', 0, 1)) ?>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name"><?= $_SESSION['name'] ?? 'User' ?></span>
+                            <span class="user-role"><?= $_SESSION['role_name'] ?? 'Role' ?></span>
+                        </div>
+                    </div>
+                    <a class="nav-link text-dark" href="logout.php">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
-
-    @yield('content')
     
+    <!-- Tambahkan padding-top untuk konten agar tidak tertutup navbar fixed -->
+    <div style="padding-top: 30px;">
+        <!-- Konten halaman Anda di sini -->
+    </div>

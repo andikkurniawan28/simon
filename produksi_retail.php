@@ -1,23 +1,11 @@
 <?php
 include('session_manager.php');
 checkRoleAccess([
-    'Superadmin', 
-    'Kabag', 
-    'Kasie', 
-    'Kasubsie', 
-    'Admin QC', 
-    'Koordinator QC', 
-    'Mandor Off Farm', 
-    'Analis Off Farm', 
-    // 'Mandor On Farm', 
-    // 'Analis On Farm', 
-    // 'Operator Pabrikasi',
-    // 'Staff Teknik',
-    // 'Staff Tanaman',
-    // 'Staff TUK',
-    'Direksi',
-    // 'Tamu',
-    ]);
+    'Superadmin','Kabag','Kasie','Kasubsie',
+    'Admin QC','Koordinator QC','Mandor Off Farm',
+    'Analis Off Farm','Direksi','Pemimpin',
+]);
+
 include('header.php');
 
 /**
@@ -25,7 +13,7 @@ include('header.php');
  * VALIDASI SESSION DATE
  * =========================
  */
-if (empty($_SESSION['date_start']) || empty($_SESSION['date_end'])) {
+if (empty($_SESSION['date_start_retail']) || empty($_SESSION['date_end_retail'])) {
     $_SESSION['flash'] = [
         'type'    => 'warning',
         'title'   => 'Session Berakhir',
@@ -35,21 +23,25 @@ if (empty($_SESSION['date_start']) || empty($_SESSION['date_end'])) {
     exit;
 }
 
-$day_start = $_SESSION['date_start_retail']; // Y-m-d H:i:s
-$day_end   = $_SESSION['date_end_retail'];   // Y-m-d H:i:s
+$day_start = $_SESSION['date_start_retail'];
+$day_end   = $_SESSION['date_end_retail'];
 
 /**
  * =========================
- * QUERY CEPAT (SINGLE SCAN)
+ * QUERY DATA
  * =========================
  */
 $sql = "
     SELECT
+        created_at,
         HOUR(created_at) AS jam,
-        SUM(value) AS total
+        value,
+        mesin_aktif,
+        berat_a, berat_b, berat_c,
+        berat_d, berat_e, berat_f
     FROM retail
     WHERE created_at BETWEEN ? AND ?
-    GROUP BY HOUR(created_at)
+    ORDER BY created_at ASC
 ";
 
 $stmt = $conn->prepare($sql);
@@ -59,154 +51,161 @@ $result = $stmt->get_result();
 
 /**
  * =========================
- * INIT JAM 0–23 (DEFAULT 0)
+ * INIT DATA
  * =========================
  */
-$hours = array_fill(0, 24, 0);
+$hourly_data = array_fill(0, 24, []);
+
+$summary = [
+    'pagi'   => 0,
+    'sore'   => 0,
+    'malam'  => 0,
+    'harian' => 0,
+];
 
 /**
  * =========================
- * ISI JAM YANG ADA DATA
+ * OLAH DATA
  * =========================
  */
 while ($row = $result->fetch_assoc()) {
     $jam = (int)$row['jam'];
-    $hours[$jam] = (float)$row['total'];
+    $hourly_data[$jam][] = $row;
+
+    if ($jam >= 7 && $jam <= 14) {
+        $summary['pagi'] += (int)$row['value'];
+    } elseif ($jam >= 15 && $jam <= 22) {
+        $summary['sore'] += (int)$row['value'];
+    } else {
+        $summary['malam'] += (int)$row['value'];
+    }
+
+    $summary['harian'] += (int)$row['value'];
 }
 
 /**
  * =========================
- * TOTAL HARIAN (07:00 - 07:00)
+ * HELPER WARNA SHIFT
  * =========================
  */
-$daily_hours = [];
-for ($i = 7; $i < 24; $i++) {
-    $daily_hours[] = $i;
+function getShiftClass($jam) {
+    if ($jam >= 7 && $jam <= 14) return 'table-primary';
+    if ($jam >= 15 && $jam <= 22) return 'table-success';
+    return 'table-dark text-light';
 }
-// Jam 0-6 dari hari berikutnya termasuk dalam harian
-for ($i = 0; $i < 7; $i++) {
-    $daily_hours[] = $i;
-}
-
-$daily_total = 0;
-foreach ($daily_hours as $h) {
-    $daily_total += $hours[$h];
-}
-
-/**
- * =========================
- * HITUNG SHIFT
- * =========================
- */
-
-/**
- * PAGI: 07:00 - 15:00
- */
-$pagi_hours = [7,8,9,10,11,12,13,14];
-$pagi_total = 0;
-foreach ($pagi_hours as $h) {
-    $pagi_total += $hours[$h];
-}
-
-/**
- * SORE/SIANG: 15:00 - 23:00
- */
-$sore_hours = [15,16,17,18,19,20,21,22];
-$sore_total = 0;
-foreach ($sore_hours as $h) {
-    $sore_total += $hours[$h];
-}
-
-/**
- * MALAM: 23:00 - 07:00 (lintas hari)
- */
-$malam_hours = [23];
-for ($i = 0; $i < 7; $i++) {
-    $malam_hours[] = $i;
-}
-$malam_total = 0;
-foreach ($malam_hours as $h) {
-    $malam_total += $hours[$h];
-}
-
-echo $day_start;
-echo $day_end;
-
 ?>
 
 <div class="container content-container">
-    <br><br>
+<br><br>
 
-    <div class="card">
-        <div class="card-header">
-            <strong>PRODUKSI Retail</strong>
-        </div>
+<!-- ================= TABLE BERAT PER SHIFT ================= -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>REKAP PER SHIFT</strong>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            
+            <div class="col-md-3">
+                <div class="card text-bg-primary text-center">
+                    <div class="card-body">
+                        <strong>PAGI</strong>
+                        <h4><?= number_format($summary['pagi']) ?></h4>
+                    </div>
+                </div>
+            </div>
 
-        <div class="card-body table-responsive">
-            <!-- <p>Catatan: 
-                <ul>
-                    <li>Harian: 07:00 - 07:00 (lusa)</li>
-                    <li>Pagi: 07:00 - 15:00</li>
-                    <li>Sore/Siang: 15:00 - 23:00</li>
-                    <li>Malam: 23:00 - 07:00 (lusa)</li>
-                </ul>
-            </p> -->
-            <table class="table table-bordered table-sm text-center">
-                <thead>
-                    <tr class="table-warning">
-                        <th>HARIAN (07:00-07:00)</th>
-                        <th><?= number_format($daily_total, 0) ?></th>
-                    </tr>
-                    <tr class="table-primary">
-                        <th>PAGI (07:00-15:00)</th>
-                        <th><?= number_format($pagi_total, 0) ?></th>
-                    </tr>
-                    <tr class="table-success">
-                        <th>SORE (15:00-23:00)</th>
-                        <th><?= number_format($sore_total, 0) ?></th>
-                    </tr>
-                    <tr class="table-dark text-light">
-                        <th>MALAM (23:00-07:00)</th>
-                        <th><?= number_format($malam_total, 0) ?></th>
-                    </tr>
-                    <tr>
-                        <th>Jam</th>
-                        <th>Total (kg)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    /**
-                     * =========================
-                     * OUTPUT DARI JAM 07 → 07
-                     * =========================
-                     */
-                    for ($i = 0; $i < 24; $i++) {
-                        $jam  = (7 + $i) % 24;
-                        $next = ($jam + 1) % 24;
-                        // Tentukan warna baris berdasarkan shift
-                        $row_class = '';
-                        if ($jam >= 7 && $jam < 15) {
-                            $row_class = 'table-primary';
-                        } elseif ($jam >= 15 && $jam < 23) {
-                            $row_class = 'table-success';
-                        } else {
-                            $row_class = 'table-dark text-light';
-                        }
-                    ?>
-                        <tr class="<?= $row_class ?>">
-                            <td>
-                                <?= str_pad($jam, 2, '0', STR_PAD_LEFT) ?>
-                                -
-                                <?= str_pad($next, 2, '0', STR_PAD_LEFT) ?>
-                            </td>
-                            <td><?= number_format($hours[$jam], 0) ?></td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+            <div class="col-md-3">
+                <div class="card text-bg-success text-center">
+                    <div class="card-body">
+                        <strong>SORE</strong>
+                        <h4><?= number_format($summary['sore']) ?></h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-bg-dark text-center">
+                    <div class="card-body">
+                        <strong>MALAM</strong>
+                        <h4><?= number_format($summary['malam']) ?></h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-bg-warning text-center">
+                    <div class="card-body">
+                        <strong>HARIAN</strong>
+                        <h4><?= number_format($summary['harian']) ?></h4>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
+
+<!-- ================= TABLE DETAIL PER JAM ================= -->
+<div class="card">
+    <div class="card-header">
+        <strong>PRODUKSI RETAIL (DETAIL PER JAM)</strong>
+    </div>
+
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-sm text-center">
+            <thead>
+                <tr>
+                    <th rowspan="2">Jam</th>
+                    <th rowspan="2">Total</th>
+                    <th rowspan="2">Mesin Aktif</th>
+                    <th colspan="6">Berat</th>
+                </tr>
+                <tr>
+                    <th>A</th><th>B</th><th>C</th>
+                    <th>D</th><th>E</th><th>F</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            for ($i = 0; $i < 24; $i++) {
+                $jam  = (7 + $i) % 24;
+                $next = ($jam + 1) % 24;
+                $row_class = getShiftClass($jam);
+
+                if (empty($hourly_data[$jam])) {
+                    echo "
+                    <tr class='$row_class'>
+                        <td>".str_pad($jam,2,'0',STR_PAD_LEFT)." - ".str_pad($next,2,'0',STR_PAD_LEFT)."</td>
+                        <td colspan='8'>-</td>
+                    </tr>";
+                    continue;
+                }
+
+                foreach ($hourly_data[$jam] as $row) {
+                    $mesin = json_decode($row['mesin_aktif'], true);
+                    $mesin_text = is_array($mesin) && count($mesin) ? implode(', ', $mesin) : '-';
+
+                    echo "
+                    <tr class='$row_class'>
+                        <td>".str_pad($jam,2,'0',STR_PAD_LEFT)." - ".str_pad($next,2,'0',STR_PAD_LEFT)."</td>
+                        <td>".number_format($row['value'])."</td>
+                        <td>$mesin_text</td>
+                        <td>{$row['berat_a']}</td>
+                        <td>{$row['berat_b']}</td>
+                        <td>{$row['berat_c']}</td>
+                        <td>{$row['berat_d']}</td>
+                        <td>{$row['berat_e']}</td>
+                        <td>{$row['berat_f']}</td>
+                    </tr>";
+                }
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 </div>
 
 <?php include('footer.php'); ?>

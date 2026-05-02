@@ -17,6 +17,7 @@ checkRoleAccess([
     // 'Staff TUK',
     'Direksi',
     // 'Tamu',
+    'Pemimpin',
     ]);
 include('header.php');
 
@@ -89,7 +90,7 @@ $result = $stmt->get_result();
                 <tbody>
                     <?php if ($result->num_rows === 0): ?>
                         <tr>
-                            <td colspan="3" class="text-muted">
+                            <td colspan="9" class="text-muted">
                                 Tidak ada data
                             </td>
                         </tr>
