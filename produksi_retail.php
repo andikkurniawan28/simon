@@ -38,7 +38,7 @@ $sql = "
         value,
         mesin_aktif,
         berat_a, berat_b, berat_c,
-        berat_d, berat_e, berat_f
+        berat_d, berat_e, berat_f, expired_checked
     FROM retail
     WHERE created_at BETWEEN ? AND ?
     ORDER BY created_at ASC
@@ -160,6 +160,7 @@ function getShiftClass($jam) {
                     <th rowspan="2">Total</th>
                     <th rowspan="2">Mesin Aktif</th>
                     <th colspan="6">Berat</th>
+                    <th rowspan="2">Expired</th>
                 </tr>
                 <tr>
                     <th>A</th><th>B</th><th>C</th>
@@ -185,7 +186,7 @@ function getShiftClass($jam) {
                 foreach ($hourly_data[$jam] as $row) {
                     $mesin = json_decode($row['mesin_aktif'], true);
                     $mesin_text = is_array($mesin) && count($mesin) ? implode(', ', $mesin) : '-';
-
+                    $expired = !empty($row['expired_checked']) ? '✔️' : '-';
                     echo "
                     <tr class='$row_class'>
                         <td>".str_pad($jam,2,'0',STR_PAD_LEFT)." - ".str_pad($next,2,'0',STR_PAD_LEFT)."</td>
@@ -197,6 +198,7 @@ function getShiftClass($jam) {
                         <td>{$row['berat_d']}</td>
                         <td>{$row['berat_e']}</td>
                         <td>{$row['berat_f']}</td>
+                        <td>$expired</td>
                     </tr>";
                 }
             }
