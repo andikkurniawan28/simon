@@ -68,7 +68,17 @@ $dataR = $dataQ->get_result();
  */
 $rows = [];
 while ($r = $dataR->fetch_assoc()) {
-    $r['p'] = json_decode($r['p'], true) ?: [];
+    // Sediakan wadah array 'p' kosong untuk menampung p1, p2, dst.
+    $r['p'] = [];
+
+    // Kita looping kspots untuk mengambil nilai dari p1, p2, dst secara dinamis
+    foreach ($kspots as $kspot) {
+        $columnName = 'p' . $kspot['id']; // Menghasilkan string 'p1', 'p2', dst.
+        
+        // Ambil nilainya dari row database, jika kolomnya tidak ada/null, beri nilai null
+        $r['p'][$kspot['id']] = $r[$columnName] ?? null;
+    }
+
     $rows[] = $r;
 }
 ?>

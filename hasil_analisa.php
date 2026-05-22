@@ -382,6 +382,7 @@ $materialsQ = $conn->query("
                     FROM analisa_off_farm_new
                     WHERE material_id = ?
                     AND created_at BETWEEN ? AND ?
+                    AND is_verified = 1 
                     ORDER BY id DESC
                 ");
             } 
@@ -394,6 +395,7 @@ $materialsQ = $conn->query("
                     JOIN samples s ON s.id = af.sample_id
                     WHERE s.material_id = ?
                     AND s.created_at BETWEEN ? AND ?
+                    AND af.is_verified = 1 
                     ORDER BY af.id DESC
                 ");
             }

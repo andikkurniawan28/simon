@@ -209,11 +209,11 @@ if ($result) {
                                     RS Out
                                 </a>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a class="dropdown-item" href="timbangan_conveyor.php">
                                     Conveyor
                                 </a>
-                            </li>
+                            </li> -->
                             <li>
                                 <a class="dropdown-item" href="produksi_50.php">
                                     Produksi 50Kg

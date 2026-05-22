@@ -94,7 +94,7 @@ include('header.php');
                 'timbangan_reject',
                 'timbangan_tetes',
                 'timbangan_rs_out',
-                'timbangan_conveyor',
+                // 'timbangan_conveyor',
                 'produksi_50',
                 'produksi_retail',
             ];

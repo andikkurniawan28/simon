@@ -168,11 +168,11 @@ if ($result) {
                                     RS Out
                                 </a>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a class="dropdown-item" href="{{ route('monitoring_2024.timbangan', 5) }}">
                                     Conveyor
                                 </a>
-                            </li>
+                            </li> -->
                             <li>
                                 <a class="dropdown-item" href="{{ route('monitoring_2024.produk50') }}">
                                     Produksi 50Kg
