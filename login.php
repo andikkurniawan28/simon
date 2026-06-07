@@ -1,7 +1,7 @@
 <?php
 session_start();
-$error = $_SESSION['login_error'] ?? null;
-unset($_SESSION['login_error']);
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 ?>
 
 <!DOCTYPE html>
@@ -92,12 +92,17 @@ toggle.addEventListener('click', () => {
 });
 </script>
 
-<?php if ($error): ?>
+<?php if ($flash): ?>
 <script>
-Swal.fire({
-    icon: 'error',
-    title: 'Login gagal',
-    text: '<?= htmlspecialchars($error) ?>'
+document.addEventListener('DOMContentLoaded', function () {
+
+    Swal.fire({
+        icon: '<?= $flash['type'] ?? 'info' ?>',
+        title: '<?= addslashes($flash['title'] ?? 'Info') ?>',
+        text: '<?= addslashes($flash['message'] ?? '') ?>',
+        confirmButtonText: 'OK'
+    });
+
 });
 </script>
 <?php endif; ?>

@@ -1,6 +1,5 @@
 <?php
 $station_id = intval($_GET['id'] ?? 0);
-$search = isset($_GET['search']) ? trim($_GET['search']) : ''; // Tambahkan parameter search
 include('session_manager.php');
 
 // Definisikan allowed berdasarkan station_id
@@ -8,7 +7,7 @@ $allowed = [];
 
 switch ($station_id) {
     // Raw Sugar
-    case 1: 
+    case 1:
         $allowed = [
             'Superadmin',
             'Kabag',
@@ -29,7 +28,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Gilingan
     case 2:
         $allowed = [
@@ -44,6 +43,7 @@ switch ($station_id) {
             'Mandor On Farm',
             'Analis On Farm',
             'Operator Pabrikasi',
+            'Operator Teknik',
             'Staff Teknik',
             // 'Staff Tanaman',
             // 'Staff TUK',
@@ -52,7 +52,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Pemurnian
     case 3:
         $allowed = [
@@ -75,7 +75,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Penguapan
     case 4:
         $allowed = [
@@ -98,7 +98,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // DRK
     case 5:
         $allowed = [
@@ -121,7 +121,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Masakan
     case 6:
         $allowed = [
@@ -144,7 +144,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // Stroop
     case 7:
         $allowed = [
@@ -167,7 +167,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Gula
     case 8:
         $allowed = [
@@ -190,7 +190,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-      
+
     // Tangki Tetes
     case 9:
         $allowed = [
@@ -213,7 +213,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // Ketel
     case 10:
         $allowed = [
@@ -236,7 +236,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Packer
     case 11:
         $allowed = [
@@ -259,7 +259,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // Request
     case 12:
         $allowed = [
@@ -282,7 +282,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-       
+
     // Sogokan
     case 16:
         $allowed = [
@@ -329,86 +329,28 @@ $station = $conn->query("
 
 /**
  * =========================
- * MATERIALS dengan fitur pencarian
+ * MATERIALS
  * =========================
  */
-$materialsQuery = "
+$materialsQ = $conn->query("
     SELECT id, name
     FROM materials
     WHERE station_id = $station_id
-";
-
-if (!empty($search)) {
-    $searchEscaped = $conn->real_escape_string($search);
-    $materialsQuery .= " AND name LIKE '%$searchEscaped%'";
-}
-
-$materialsQuery .= " ORDER BY id ASC";
-
-$materialsQ = $conn->query($materialsQuery);
+    ORDER BY id ASC
+");
 ?>
 
 <div class="container content-container">
     <br><br>
-    
-    <!-- Header dengan judul station dan form pencarian -->
+
     <div class="row mb-3">
-        <div class="col-md-6">
-            <h4>Data Analisa: <?= htmlspecialchars($station['name']) ?></h4>
-        </div>
-        <div class="col-md-6">
-            <form method="GET" action="" id="searchForm">
-                <input type="hidden" name="id" value="<?= $station_id ?>">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input 
-                        type="text" 
-                        name="search" 
-                        class="form-control" 
-                        placeholder="Ketik untuk mencari material..." 
-                        value="<?= htmlspecialchars($search) ?>"
-                        autocomplete="off"
-                        id="searchInput"
-                    >
-                    <?php if (!empty($search)): ?>
-                        <a href="?id=<?= $station_id ?>" class="btn btn-outline-secondary">
-                            <i class="fas fa-times"></i>
-                        </a>
-                    <?php endif; ?>
-                </div>
-            </form>
+        <div class="col-md-4">
+            <input type="text"
+                id="materialSearch"
+                class="form-control"
+                placeholder="Cari material...">
         </div>
     </div>
-    
-    <!-- Info hasil pencarian -->
-    <?php if (!empty($search)): ?>
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="alert alert-info py-2">
-                    <i class="fas fa-info-circle"></i> 
-                    Menampilkan <strong><?= $materialsQ->num_rows ?></strong> material untuk pencarian "<strong><?= htmlspecialchars($search) ?></strong>"
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-    
-    <!-- Pesan jika tidak ada material -->
-    <?php if ($materialsQ->num_rows == 0): ?>
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <?php if (!empty($search)): ?>
-                        Tidak ada material dengan nama "<strong><?= htmlspecialchars($search) ?></strong>" ditemukan.
-                    <?php else: ?>
-                        Tidak ada material untuk station ini.
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
 
     <div class="row">
 
@@ -443,18 +385,16 @@ $materialsQ = $conn->query($materialsQuery);
              */
             $year = (int) date('Y', strtotime($_SESSION['date']));
 
-            if ($year >= 2026)
-            {    
+            if ($year >= 2026) {
                 $dataQ = $conn->prepare("
                     SELECT *
                     FROM analisa_off_farm_new
                     WHERE material_id = ?
                     AND created_at BETWEEN ? AND ?
+                    AND is_verified = 1 
                     ORDER BY id DESC
                 ");
-            } 
-            else 
-            {
+            } else {
                 $dataQ = $conn->prepare("
                     SELECT 
                         af.*
@@ -462,6 +402,7 @@ $materialsQ = $conn->query($materialsQuery);
                     JOIN samples s ON s.id = af.sample_id
                     WHERE s.material_id = ?
                     AND s.created_at BETWEEN ? AND ?
+                    AND af.is_verified = 1 
                     ORDER BY af.id DESC
                 ");
             }
@@ -497,15 +438,18 @@ $materialsQ = $conn->query($materialsQuery);
             $data->data_seek(0);
             ?>
 
-            <div class="col-md-<?php if(count($methods) >= 8) echo "12"; else echo "6"; ?>">
+            <?php
+            $showPanVolume = in_array($material['id'], [43, 44, 45, 46, 47, 48, 49]);
+            $excludedIndicators = ['Nopol'];
+            ?>
+
+            <!-- <div class="col-md-4"> -->
+            <div class="col-md-<?php if (count($methods) >= 8) echo "12"; else echo "6"; ?> material-card"
+                data-name="<?= strtolower($material['name']) ?>">
                 <div class="card mb-4">
-                    
-                    <!-- Highlight jika material sesuai pencarian -->
-                    <div class="card-header text-left <?= (!empty($search) && stripos($material['name'], $search) !== false) ? 'bg-warning' : '' ?>">
+
+                    <div class="card-header text-left">
                         <strong><?= strtoupper($material['name']) ?></strong>
-                        <?php if (!empty($search) && stripos($material['name'], $search) !== false): ?>
-                            <span class="badge bg-dark ms-2">Hasil pencarian</span>
-                        <?php endif; ?>
                     </div>
 
                     <div class="card-body">
@@ -516,6 +460,12 @@ $materialsQ = $conn->query($materialsQuery);
                                 <thead>
                                     <tr>
                                         <th>Jam</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th>Pan</th>
+                                            <th>Hl</th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m): ?>
                                             <th><?= $m['indicator_name'] ?></th>
                                         <?php endforeach; ?>
@@ -524,8 +474,20 @@ $materialsQ = $conn->query($materialsQuery);
                                     <!-- AVG -->
                                     <tr style="background:#ffc107">
                                         <th>Avg</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th></th>
+                                            <th></th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m):
                                             $col = str_replace(' ', '_', $m['indicator_name']);
+
+                                            if (in_array($m['indicator_name'], $excludedIndicators)) {
+                                                echo '<th></th>';
+                                                continue;
+                                            }
+
                                             $avg = !empty($stats[$col])
                                                 ? array_sum($stats[$col]) / count($stats[$col])
                                                 : null;
@@ -544,8 +506,20 @@ $materialsQ = $conn->query($materialsQuery);
                                     <!-- MIN -->
                                     <tr style="background:#28a745;color:#fff">
                                         <th>Min</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th></th>
+                                            <th></th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m):
                                             $col = str_replace(' ', '_', $m['indicator_name']);
+
+                                            if (in_array($m['indicator_name'], $excludedIndicators)) {
+                                                echo '<th></th>';
+                                                continue;
+                                            }
+
                                             $min = !empty($stats[$col]) ? min($stats[$col]) : null;
                                         ?>
                                             <th>
@@ -562,8 +536,20 @@ $materialsQ = $conn->query($materialsQuery);
                                     <!-- MAX -->
                                     <tr style="background:#dc3545;color:#fff">
                                         <th>Max</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th></th>
+                                            <th></th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m):
                                             $col = str_replace(' ', '_', $m['indicator_name']);
+
+                                            if (in_array($m['indicator_name'], $excludedIndicators)) {
+                                                echo '<th></th>';
+                                                continue;
+                                            }
+
                                             $max = !empty($stats[$col]) ? max($stats[$col]) : null;
                                         ?>
                                             <th>
@@ -584,17 +570,28 @@ $materialsQ = $conn->query($materialsQuery);
                                         <tr>
                                             <td><?= date('H:i', strtotime($row['created_at'])) ?></td>
 
+                                            <?php if ($showPanVolume): ?>
+                                                <td><?= $row['pan'] ?></td>
+                                                <td><?= $row['volume'] ?></td>
+                                            <?php endif; ?>
+
                                             <?php foreach ($methods as $m):
                                                 $col = str_replace(' ', '_', $m['indicator_name']);
                                                 $v = $row[$col] ?? null;
                                             ?>
                                                 <td>
-                                                    <?= $v !== null
-                                                        ? in_array($col, ['IU', 'CaO'])
-                                                        ? number_format($v)
-                                                        : number_format($v, 2)
-                                                        : ''
-                                                    ?>
+                                                    <?php if ($v !== null && $v !== ''): ?>
+
+                                                        <?php if (in_array($m['indicator_name'], $excludedIndicators)): ?>
+                                                            <?= $v ?>
+                                                        <?php else: ?>
+                                                            <?= in_array($col, ['IU', 'CaO'])
+                                                                ? number_format((float)$v)
+                                                                : number_format((float)$v, 2)
+                                                            ?>
+                                                        <?php endif; ?>
+
+                                                    <?php endif; ?>
                                                 </td>
                                             <?php endforeach; ?>
                                         </tr>
@@ -612,76 +609,21 @@ $materialsQ = $conn->query($materialsQuery);
     </div>
 </div>
 
-<!-- JavaScript untuk pencarian langsung (live search) -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const searchForm = document.getElementById('searchForm');
-    const stationId = '<?= $station_id ?>';
-    
-    if (searchInput) {
-        // Variable untuk debounce
-        let timeout = null;
-        
-        // Fungsi untuk submit form
-        function submitSearch() {
-            searchForm.submit();
+document.getElementById('materialSearch').addEventListener('keyup', function () {
+    let keyword = this.value.toLowerCase();
+    let cards = document.querySelectorAll('.material-card');
+
+    cards.forEach(function (card) {
+        let name = card.getAttribute('data-name');
+
+        if (name.includes(keyword)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
         }
-        
-        // Event listener untuk setiap kali user mengetik
-        searchInput.addEventListener('input', function() {
-            // Clear timeout sebelumnya
-            clearTimeout(timeout);
-            
-            // Set timeout baru (300ms delay setelah berhenti mengetik)
-            timeout = setTimeout(submitSearch, 300);
-        });
-        
-        // Mencegah form submit normal ketika enter
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            submitSearch();
-        });
-        
-        // Hapus timeout jika input dikosongkan dengan cepat
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                searchInput.value = '';
-                timeout = setTimeout(submitSearch, 50);
-            }
-        });
-    }
+    });
 });
 </script>
-
-<!-- CSS tambahan untuk live search -->
-<style>
-/* Animasi loading untuk indikator pencarian */
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
-
-.search-loading .input-group-text i {
-    animation: pulse 1s infinite;
-}
-
-/* Style untuk input pencarian */
-#searchInput {
-    border-left: none;
-    padding-left: 0;
-}
-
-.input-group-text {
-    border-right: none;
-    background-color: white;
-}
-
-/* Hover effect untuk tombol reset */
-.btn-outline-secondary:hover {
-    background-color: #f8f9fa;
-}
-</style>
 
 <?php include('footer.php'); ?>

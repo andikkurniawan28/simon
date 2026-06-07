@@ -7,7 +7,7 @@ $allowed = [];
 
 switch ($station_id) {
     // Raw Sugar
-    case 1: 
+    case 1:
         $allowed = [
             'Superadmin',
             'Kabag',
@@ -28,7 +28,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Gilingan
     case 2:
         $allowed = [
@@ -43,6 +43,7 @@ switch ($station_id) {
             'Mandor On Farm',
             'Analis On Farm',
             'Operator Pabrikasi',
+            'Operator Teknik',
             'Staff Teknik',
             // 'Staff Tanaman',
             // 'Staff TUK',
@@ -51,7 +52,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Pemurnian
     case 3:
         $allowed = [
@@ -74,7 +75,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Penguapan
     case 4:
         $allowed = [
@@ -97,7 +98,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // DRK
     case 5:
         $allowed = [
@@ -120,7 +121,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Masakan
     case 6:
         $allowed = [
@@ -143,7 +144,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // Stroop
     case 7:
         $allowed = [
@@ -166,7 +167,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Gula
     case 8:
         $allowed = [
@@ -189,7 +190,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-      
+
     // Tangki Tetes
     case 9:
         $allowed = [
@@ -212,7 +213,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // Ketel
     case 10:
         $allowed = [
@@ -235,7 +236,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-    
+
     // Packer
     case 11:
         $allowed = [
@@ -258,7 +259,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-        
+
     // Request
     case 12:
         $allowed = [
@@ -281,7 +282,7 @@ switch ($station_id) {
             'Pemimpin',
         ];
         break;
-       
+
     // Sogokan
     case 16:
         $allowed = [
@@ -342,6 +343,20 @@ $materialsQ = $conn->query("
 <div class="container content-container">
     <br><br>
 
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text"
+                    id="materialSearch"
+                    class="form-control"
+                    placeholder="Cari material...">
+            </div>
+        </div>
+    </div>
+
     <div class="row">
 
         <?php while ($material = $materialsQ->fetch_assoc()): ?>
@@ -375,8 +390,7 @@ $materialsQ = $conn->query("
              */
             $year = (int) date('Y', strtotime($_SESSION['date']));
 
-            if ($year >= 2026)
-            {    
+            if ($year >= 2026) {
                 $dataQ = $conn->prepare("
                     SELECT *
                     FROM analisa_off_farm_new
@@ -385,9 +399,7 @@ $materialsQ = $conn->query("
                     AND is_verified = 1 
                     ORDER BY id DESC
                 ");
-            } 
-            else 
-            {
+            } else {
                 $dataQ = $conn->prepare("
                     SELECT 
                         af.*
@@ -431,8 +443,14 @@ $materialsQ = $conn->query("
             $data->data_seek(0);
             ?>
 
+            <?php
+            $showPanVolume = in_array($material['id'], [43, 44, 45, 46, 47, 48, 49]);
+            $excludedIndicators = ['Nopol'];
+            ?>
+
             <!-- <div class="col-md-4"> -->
-            <div class="col-md-<?php if(count($methods) >= 8) echo "12"; else echo "6"; ?>">
+            <div class="col-md-<?php if (count($methods) >= 8) echo "12"; else echo "6"; ?> material-card"
+                data-name="<?= strtolower($material['name']) ?>">
                 <div class="card mb-4">
 
                     <div class="card-header text-left">
@@ -447,6 +465,12 @@ $materialsQ = $conn->query("
                                 <thead>
                                     <tr>
                                         <th>Jam</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th>Pan</th>
+                                            <th>Hl</th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m): ?>
                                             <th><?= $m['indicator_name'] ?></th>
                                         <?php endforeach; ?>
@@ -455,8 +479,20 @@ $materialsQ = $conn->query("
                                     <!-- AVG -->
                                     <tr style="background:#ffc107">
                                         <th>Avg</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th></th>
+                                            <th></th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m):
                                             $col = str_replace(' ', '_', $m['indicator_name']);
+
+                                            if (in_array($m['indicator_name'], $excludedIndicators)) {
+                                                echo '<th></th>';
+                                                continue;
+                                            }
+
                                             $avg = !empty($stats[$col])
                                                 ? array_sum($stats[$col]) / count($stats[$col])
                                                 : null;
@@ -475,8 +511,20 @@ $materialsQ = $conn->query("
                                     <!-- MIN -->
                                     <tr style="background:#28a745;color:#fff">
                                         <th>Min</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th></th>
+                                            <th></th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m):
                                             $col = str_replace(' ', '_', $m['indicator_name']);
+
+                                            if (in_array($m['indicator_name'], $excludedIndicators)) {
+                                                echo '<th></th>';
+                                                continue;
+                                            }
+
                                             $min = !empty($stats[$col]) ? min($stats[$col]) : null;
                                         ?>
                                             <th>
@@ -493,8 +541,20 @@ $materialsQ = $conn->query("
                                     <!-- MAX -->
                                     <tr style="background:#dc3545;color:#fff">
                                         <th>Max</th>
+
+                                        <?php if ($showPanVolume): ?>
+                                            <th></th>
+                                            <th></th>
+                                        <?php endif; ?>
+
                                         <?php foreach ($methods as $m):
                                             $col = str_replace(' ', '_', $m['indicator_name']);
+
+                                            if (in_array($m['indicator_name'], $excludedIndicators)) {
+                                                echo '<th></th>';
+                                                continue;
+                                            }
+
                                             $max = !empty($stats[$col]) ? max($stats[$col]) : null;
                                         ?>
                                             <th>
@@ -515,17 +575,28 @@ $materialsQ = $conn->query("
                                         <tr>
                                             <td><?= date('H:i', strtotime($row['created_at'])) ?></td>
 
+                                            <?php if ($showPanVolume): ?>
+                                                <td><?= $row['pan'] ?></td>
+                                                <td><?= $row['volume'] ?></td>
+                                            <?php endif; ?>
+
                                             <?php foreach ($methods as $m):
                                                 $col = str_replace(' ', '_', $m['indicator_name']);
                                                 $v = $row[$col] ?? null;
                                             ?>
                                                 <td>
-                                                    <?= $v !== null
-                                                        ? in_array($col, ['IU', 'CaO'])
-                                                        ? number_format($v)
-                                                        : number_format($v, 2)
-                                                        : ''
-                                                    ?>
+                                                    <?php if ($v !== null && $v !== ''): ?>
+
+                                                        <?php if (in_array($m['indicator_name'], $excludedIndicators)): ?>
+                                                            <?= $v ?>
+                                                        <?php else: ?>
+                                                            <?= in_array($col, ['IU', 'CaO'])
+                                                                ? number_format((float)$v)
+                                                                : number_format((float)$v, 2)
+                                                            ?>
+                                                        <?php endif; ?>
+
+                                                    <?php endif; ?>
                                                 </td>
                                             <?php endforeach; ?>
                                         </tr>
@@ -542,5 +613,22 @@ $materialsQ = $conn->query("
 
     </div>
 </div>
+
+<script>
+document.getElementById('materialSearch').addEventListener('keyup', function () {
+    let keyword = this.value.toLowerCase();
+    let cards = document.querySelectorAll('.material-card');
+
+    cards.forEach(function (card) {
+        let name = card.getAttribute('data-name');
+
+        if (name.includes(keyword)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+</script>
 
 <?php include('footer.php'); ?>

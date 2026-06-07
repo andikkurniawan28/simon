@@ -63,6 +63,8 @@ if (!password_verify($password, $user['password'])) {
     exit;
 }
 
+
+
 /**
  * =========================
  * 3. LOGIN SUKSES
@@ -70,6 +72,25 @@ if (!password_verify($password, $user['password'])) {
  */
 session_regenerate_id(true);
 
+/**
+ * =========================
+ * DEVICE TOKEN (1 DEVICE LOGIN)
+ * =========================
+ */
+$device_token = bin2hex(random_bytes(32));
+
+$stmt = $conn->prepare("
+    UPDATE users
+    SET device_token = ?
+    WHERE id = ?
+");
+$stmt->bind_param("si", $device_token, $user['id']);
+$stmt->execute();
+
+/**
+ * simpan ke session
+ */
+$_SESSION['device_token'] = $device_token;
 $_SESSION['login']    = true;
 $_SESSION['user_id']  = $user['id'];
 $_SESSION['username'] = $user['username'];

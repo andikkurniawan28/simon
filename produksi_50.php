@@ -143,19 +143,19 @@ foreach ($malam_hours as $h) {
                 <thead>
                     <tr class="table-warning">
                         <th>HARIAN</th>
-                        <th><?= number_format($daily_total, 0) ?></th>
+                        <th><?= number_format($daily_total, 1) ?></th>
                     </tr>
                     <tr class="table-warning">
                         <th>PAGI</th>
-                        <th><?= number_format($pagi_total, 0) ?></th>
+                        <th><?= number_format($pagi_total, 1) ?></th>
                     </tr>
                     <tr class="table-warning">
                         <th>SORE</th>
-                        <th><?= number_format($sore_total, 0) ?></th>
+                        <th><?= number_format($sore_total, 1) ?></th>
                     </tr>
                     <tr class="table-warning">
                         <th>MALAM</th>
-                        <th><?= number_format($malam_total, 0) ?></th>
+                        <th><?= number_format($malam_total, 1) ?></th>
                     </tr>
                     <tr>
                         <th>Jam</th>
@@ -179,7 +179,7 @@ foreach ($malam_hours as $h) {
                                 -
                                 <?= str_pad($next, 2, '0', STR_PAD_LEFT) ?>
                             </td>
-                            <td><?= number_format($hours[$jam], 0) ?></td>
+                            <td><?= number_format($hours[$jam], 1) ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>

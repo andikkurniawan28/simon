@@ -149,9 +149,9 @@ $stat = $statQ->get_result()->fetch_assoc();
                         <?php while ($row = $data->fetch_assoc()): ?>
                             <tr>
                                 <td><?= date('H:i', strtotime($row['ari_at'])) ?></td>
-                                <td><?= number_format($row['brix_ari'], 2) ?></td>
-                                <td><?= number_format($row['pol_ari'], 2) ?></td>
-                                <td><?= number_format($row['rendemen_ari'], 2) ?></td>
+                                <td><?= $row['brix_ari'] !== null ? number_format($row['brix_ari'], 2) : '' ?></td>
+                                <td><?= $row['pol_ari'] !== null ? number_format($row['pol_ari'], 2) : '' ?></td>
+                                <td><?= $row['rendemen_ari'] !== null ? number_format($row['rendemen_ari'], 2) : '' ?></td>
                                 <td><?= htmlspecialchars($row['nomor_antrian']) ?></td>
                                 <td><?= htmlspecialchars($row['register']) ?></td>
                                 <td><?= htmlspecialchars($row['petani']) ?></td>

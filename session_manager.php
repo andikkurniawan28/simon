@@ -50,6 +50,56 @@ $role_id = $_SESSION['role_id'];
 $role_name = $_SESSION['role_name'];
 $date    = $_SESSION['date'];
 
+/**
+ * =========================
+ * DEVICE TOKEN CHECK (1 DEVICE ONLY)
+ * =========================
+ */
+
+if (!empty($user_id)) {
+
+    // ambil token dari DB
+    $stmt = $conn->prepare("
+        SELECT device_token
+        FROM users
+        WHERE id = ?
+        LIMIT 1
+    ");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $db = $result->fetch_assoc();
+    $stmt->close();
+
+    $db_token = $db['device_token'] ?? null;
+    $session_token = $_SESSION['device_token'] ?? null;
+
+    // kalau belum ada token di session atau DB mismatch → logout
+    if (!$db_token || !$session_token || $db_token !== $session_token) {
+
+        // destroy session
+        session_unset();
+        session_destroy();
+
+        echo "
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Session berakhir',
+                    text: 'Anda login di device lain atau session tidak valid',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = 'login.php';
+                });
+            });
+        </script>
+        ";
+        exit;
+    }
+}
+
 function checkRoleAccess($allowed_roles = []) 
 {
     global $role_name;
