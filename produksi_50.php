@@ -134,7 +134,7 @@ foreach ($malam_hours as $h) {
 
     <div class="card">
         <div class="card-header">
-            <strong>PRODUKSI 50Kg</strong>
+            <strong>PRODUKSI 50Kg MANUAL</strong>
         </div>
 
         <div class="card-body table-responsive">

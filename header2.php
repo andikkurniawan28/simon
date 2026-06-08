@@ -174,8 +174,18 @@ if ($result) {
                                 </a>
                             </li> -->
                             <li>
-                                <a class="dropdown-item" href="{{ route('monitoring_2024.produk50') }}">
-                                    Produksi 50Kg
+                                <a class="dropdown-item" href="produksi_50.php">
+                                    Produksi 50Kg Manual
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="produksi_50_per_line_siproduk.php">
+                                    Produksi 50Kg SiProduk
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="produksi_retail.php">
+                                    Produksi Retail
                                 </a>
                             </li>
                         </ul>
