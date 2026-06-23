@@ -11,6 +11,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -34,6 +35,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -58,6 +60,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -81,6 +84,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -104,6 +108,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -127,6 +132,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -150,6 +156,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -173,6 +180,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -196,6 +204,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -219,6 +228,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -242,6 +252,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -265,6 +276,7 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',
@@ -288,6 +300,31 @@ switch ($station_id) {
         $allowed = [
             'Superadmin',
             'Kabag',
+            'Kabag Lain', 
+            'Kasie',
+            'Kasubsie',
+            'Admin QC',
+            'Koordinator QC',
+            'Mandor Off Farm',
+            'Analis Off Farm',
+            'Mandor On Farm',
+            'Analis On Farm',
+            'Operator Pabrikasi',
+            // 'Staff Teknik',
+            // 'Staff Tanaman',
+            // 'Staff TUK',
+            // 'Direksi',
+            // 'Tamu',
+            'Pemimpin',
+        ];
+        break;
+
+    // Sogokan
+    default:
+        $allowed = [
+            'Superadmin',
+            'Kabag',
+            'Kabag Lain', 
             'Kasie',
             'Kasubsie',
             'Admin QC',

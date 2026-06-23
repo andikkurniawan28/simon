@@ -3,6 +3,7 @@ include('session_manager.php');
 checkRoleAccess([
     'Superadmin', 
     'Kabag', 
+    'Kabag Lain', 
     'Kasie', 
     'Kasubsie', 
     'Admin QC', 
@@ -55,7 +56,7 @@ $dataQ = $conn->prepare("
     SELECT *
     FROM keliling_proses
     WHERE created_at BETWEEN ? AND ?
-    ORDER BY created_at ASC
+    ORDER BY created_at DESC
 ");
 $dataQ->bind_param("ss", $date_start, $date_end);
 $dataQ->execute();
@@ -89,7 +90,7 @@ while ($r = $dataR->fetch_assoc()) {
     <div class="row">
 
         <?php foreach ($kspots as $kspot): ?>
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-2">
                 <div class="card mb-4">
 
                     <div class="card-header text-center">

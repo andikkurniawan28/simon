@@ -19,6 +19,7 @@ checkRoleAccess([
     'Direksi',
     'Tamu',
     'Pemimpin',
+    'Kabag Lain',
     ]);
 include('header.php');
 ?>

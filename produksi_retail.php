@@ -4,6 +4,7 @@ checkRoleAccess([
     'Superadmin','Kabag','Kasie','Kasubsie',
     'Admin QC','Koordinator QC','Mandor Off Farm',
     'Analis Off Farm','Direksi','Pemimpin',
+    'Kabag Lain', 
 ]);
 
 include('header.php');
@@ -178,7 +179,7 @@ function getShiftClass($jam) {
                     echo "
                     <tr class='$row_class'>
                         <td>".str_pad($jam,2,'0',STR_PAD_LEFT)." - ".str_pad($next,2,'0',STR_PAD_LEFT)."</td>
-                        <td colspan='8'>-</td>
+                        <td colspan='9'>-</td>
                     </tr>";
                     continue;
                 }

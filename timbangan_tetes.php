@@ -3,6 +3,7 @@ include('session_manager.php');
 checkRoleAccess([
     'Superadmin', 
     'Kabag', 
+    'Kabag Lain', 
     'Kasie', 
     'Kasubsie', 
     'Admin QC', 
