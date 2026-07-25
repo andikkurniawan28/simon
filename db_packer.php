@@ -1,21 +1,29 @@
 <?php
-date_default_timezone_set('Asia/Jakarta');
 
-// $host     = "192.168.28.60";
-$host     = "192.168.20.234";
-// $host     = "192.168.29.250";
+mysqli_report(MYSQLI_REPORT_OFF);
+
 $username = "andik";
 $password = "andik";
 $database = "qc";
 
-// Membuat koneksi
-$conn2 = mysqli_connect($host, $username, $password, $database);
+$hosts = [
+    "192.168.20.234",
+    "192.168.28.60"
+];
 
-// Cek koneksi
-if (!$conn2) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
+$conn2 = false;
+
+foreach ($hosts as $host) {
+
+    $mysqli = mysqli_init();
+    mysqli_options($mysqli, MYSQLI_OPT_CONNECT_TIMEOUT, 2); // timeout 2 detik
+
+    if (@mysqli_real_connect($mysqli, $host, $username, $password, $database)) {
+        $conn2 = $mysqli;
+        break;
+    }
 }
 
-// Jika perlu, bisa aktifkan baris ini untuk testing
-// echo "Koneksi berhasil";
-?>
+if (!$conn2) {
+    die("Semua server database tidak dapat dihubungi.");
+}
