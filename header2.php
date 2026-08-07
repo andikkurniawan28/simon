@@ -188,6 +188,11 @@ if ($result) {
                                     Produksi Retail
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="timbangan_conveyor_baru.php">
+                                    Conveyor Baru
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item">
