@@ -643,7 +643,7 @@ $materialsQ = $conn->query("
                 <div class="card mb-4">
 
                     <div class="card-header text-left">
-                        <strong><?= strtoupper($material['name']) ?></strong>
+                        <strong><?= strtoupper($material['name']) ?> ⭐</strong>
                     </div>
 
                     <div class="card-body">
