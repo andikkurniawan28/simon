@@ -135,10 +135,12 @@ if ($result) {
                             </li> -->
                             <li>
                                 <?php foreach($stations as $s): ?>
+                                <?php // if($s['id'] == 8) { continue; } ?>
                                 <a class="dropdown-item" href="hasil_analisa.php?id=<?= $s['id'] ?>">
                                     <?= $s['name'] ?>
                                 </a>
                                 <?php endforeach ?>
+                                <a class="dropdown-item" href="hasil_analisa_gula.php">Gula (SNI)</a>
                             </li>
                         </ul>
                     </li>
